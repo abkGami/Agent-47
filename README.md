@@ -668,7 +668,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👥 Team
 
 **Project Lead & Developer**  
-[Your Name] - [@YourGitHub](https://github.com/yourusername)
+[Your Name] - [@abkGami](https://github.com/abkGami)
 
 **Built for the Solana AI Agent Bounty**
 
@@ -684,7 +684,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support & Contact
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/solana-agent-wallet/issues)
+- **Issues**: [GitHub Issues](https://github.com/abkGami/Agent-47/issues)
 - **Telegram**: [@YourTelegramHandle]
 - **Email**: your.email@example.com
 - **Documentation**: [SKILLS.md](SKILLS.md)
@@ -692,7 +692,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🔗 Links
 
 - **Live Bot**: [@YourBotUsername](https://t.me/YourBotUsername)
-- **GitHub**: [github.com/yourusername/solana-agent-wallet](https://github.com/yourusername/solana-agent-wallet)
+- **GitHub**: [github.com/yourusername/Agent-47](https://github.com/abkGami/Agent-47)
 - **Solscan**: [View on Solscan](https://solscan.io/?cluster=devnet)
 - **Privy**: [privy.io](https://privy.io)
 - **Jupiter**: [jup.ag](https://jup.ag)
