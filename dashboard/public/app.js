@@ -14,6 +14,9 @@ const PAGE_LABELS = {
   offramp:      'Off-ramp',
 };
 
+// --- API base (set in config.js; empty = same origin for local dev) ----------
+const API_BASE = (window.API_BASE || '').replace(/\/$/, '');
+
 // --- Pull token from URL ------------------------------------------------------
 const TOKEN = new URLSearchParams(window.location.search).get('token');
 
@@ -44,7 +47,7 @@ function toast(msg, type='info') {
 async function api(path) {
   const sep = path.includes('?') ? '&' : '?';
   try {
-    const res = await fetch(path + sep + 'token=' + TOKEN);
+    const res = await fetch(API_BASE + path + sep + 'token=' + TOKEN);
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || 'HTTP ' + res.status);

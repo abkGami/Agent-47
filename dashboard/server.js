@@ -117,7 +117,15 @@ function withUser(req, res, next) {
 const app = express();
 const PORT = process.env.DASHBOARD_PORT || 4747;
 
-app.use(cors());
+// Allow any origin — the dashboard token is the sole auth mechanism, so
+// wildcard CORS is safe. Required for Vercel-hosted frontend → VPS API calls.
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "x-dashboard-token"],
+  }),
+);
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
