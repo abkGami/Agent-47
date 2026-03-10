@@ -1,19 +1,23 @@
-const Database = require('better-sqlite3');
-const fs      = require('fs');
-const path    = require('path');
-const crypto  = require('crypto');
+const Database = require("better-sqlite3");
+const fs = require("fs");
+const path = require("path");
+const crypto = require("crypto");
 
 // Create data directory if it doesn't exist
-const dataDir = path.join(__dirname, '..', 'data');
+const dataDir = path.join(__dirname, "..", "data");
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
 // Create database instance
-const db = new Database(path.join(dataDir, 'agent_wallet.db'));
+const db = new Database(path.join(dataDir, "agent_wallet.db"));
 
 // Migrate: add dashboard_token column to existing databases
-try { db.exec('ALTER TABLE users ADD COLUMN dashboard_token TEXT'); } catch (_) { /* already exists */ }
+try {
+  db.exec("ALTER TABLE users ADD COLUMN dashboard_token TEXT");
+} catch (_) {
+  /* already exists */
+}
 
 // Initialize database with all required tables
 function initDB() {
@@ -94,7 +98,7 @@ initDB();
  * @returns {object|null} User object or null if not found
  */
 function getUserByTelegramId(telegramId) {
-  const stmt = db.prepare('SELECT * FROM users WHERE telegram_id = ?');
+  const stmt = db.prepare("SELECT * FROM users WHERE telegram_id = ?");
   return stmt.get(telegramId) || null;
 }
 
@@ -107,13 +111,19 @@ function getUserByTelegramId(telegramId) {
  * @param {string} walletId - Internal wallet identifier
  * @returns {object} Newly created user object
  */
-function createUser(telegramId, username, privyUserId, walletAddress, walletId) {
+function createUser(
+  telegramId,
+  username,
+  privyUserId,
+  walletAddress,
+  walletId,
+) {
   const stmt = db.prepare(`
     INSERT INTO users (telegram_id, username, privy_user_id, wallet_address, wallet_id)
     VALUES (?, ?, ?, ?, ?)
   `);
   stmt.run(telegramId, username, privyUserId, walletAddress, walletId);
-  
+
   // Retrieve and return the newly created user
   return getUserByTelegramId(telegramId);
 }
@@ -142,7 +152,9 @@ function updateUserWallet(telegramId, walletAddress, walletId, privyUserId) {
  * @returns {Array} Array of active copy trade configurations
  */
 function getCopyTrades(telegramId) {
-  const stmt = db.prepare('SELECT * FROM copy_trades WHERE telegram_id = ? AND is_active = 1');
+  const stmt = db.prepare(
+    "SELECT * FROM copy_trades WHERE telegram_id = ? AND is_active = 1",
+  );
   return stmt.all(telegramId);
 }
 
@@ -182,7 +194,7 @@ function removeCopyTrade(telegramId, targetWallet) {
  * @returns {Array} Array of all agent bot configurations
  */
 function getAgentBots(telegramId) {
-  const stmt = db.prepare('SELECT * FROM agent_bots WHERE telegram_id = ?');
+  const stmt = db.prepare("SELECT * FROM agent_bots WHERE telegram_id = ?");
   return stmt.all(telegramId);
 }
 
@@ -227,7 +239,15 @@ function updateAgentStatus(botId, isRunning) {
  * @param {string} txSignature - Blockchain transaction hash
  * @param {string} status - Transaction status (e.g., "success", "failed")
  */
-function logTransaction(telegramId, type, amount, tokenIn, tokenOut, txSignature, status) {
+function logTransaction(
+  telegramId,
+  type,
+  amount,
+  tokenIn,
+  tokenOut,
+  txSignature,
+  status,
+) {
   const stmt = db.prepare(`
     INSERT INTO transactions (telegram_id, type, amount, token_in, token_out, tx_signature, status, created_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))
@@ -258,10 +278,9 @@ function saveBankAccount(telegramId, bankName, accountNumber, accountName) {
  * @returns {object|null} Bank account object or null if not found
  */
 function getBankAccount(telegramId) {
-  const stmt = db.prepare('SELECT * FROM bank_accounts WHERE telegram_id = ?');
+  const stmt = db.prepare("SELECT * FROM bank_accounts WHERE telegram_id = ?");
   return stmt.get(telegramId) || null;
 }
-
 
 // Dashboard Token Operations
 
@@ -274,8 +293,11 @@ function getOrCreateDashboardToken(telegramId) {
   const user = getUserByTelegramId(telegramId);
   if (!user) return null;
   if (user.dashboard_token) return user.dashboard_token;
-  const token = crypto.randomBytes(28).toString('hex');
-  db.prepare('UPDATE users SET dashboard_token = ? WHERE telegram_id = ?').run(token, telegramId);
+  const token = crypto.randomBytes(28).toString("hex");
+  db.prepare("UPDATE users SET dashboard_token = ? WHERE telegram_id = ?").run(
+    token,
+    telegramId,
+  );
   return token;
 }
 
@@ -286,7 +308,10 @@ function getOrCreateDashboardToken(telegramId) {
  */
 function getUserByDashboardToken(token) {
   if (!token) return null;
-  return db.prepare('SELECT * FROM users WHERE dashboard_token = ?').get(token) || null;
+  return (
+    db.prepare("SELECT * FROM users WHERE dashboard_token = ?").get(token) ||
+    null
+  );
 }
 
 // Export database instance and functions

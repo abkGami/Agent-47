@@ -1,387 +1,468 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agent-47 &mdash; My Dashboard</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-
-<!-- === INVALID TOKEN SCREEN === -->
-<div id="screenInvalid" class="screen-cover" style="display:none">
-  <div class="screen-center">
-    <div class="screen-icon">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-    </div>
-    <h2 class="screen-title">Invalid Link</h2>
-    <p class="screen-body">This dashboard link is missing or invalid.<br>Use <code>/dashboard</code> in the Telegram bot to get your personal link.</p>
-  </div>
-</div>
-
-<!-- === LOADING SCREEN === -->
-<div id="screenLoading" class="screen-cover">
-  <div class="screen-center">
-    <div class="loader"></div>
-    <p class="screen-body" style="margin-top:16px">Loading your dashboard&hellip;</p>
-  </div>
-</div>
-
-<!-- === MAIN APP === -->
-<div id="app" style="display:none">
-
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <div class="brand-icon">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
-      </div>
-      <div class="brand-text-wrap">
-        <div class="brand-name">Agent-47</div>
-        <div class="brand-net" id="sidebarNet">devnet</div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agent-47 &mdash; My Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- === INVALID TOKEN SCREEN === -->
+    <div id="screenInvalid" class="screen-cover" style="display: none">
+      <div class="screen-center">
+        <div class="screen-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+            />
+          </svg>
+        </div>
+        <h2 class="screen-title">Invalid Link</h2>
+        <p class="screen-body">
+          This dashboard link is missing or invalid.<br />Use
+          <code>/dashboard</code> in the Telegram bot to get your personal link.
+        </p>
       </div>
     </div>
 
-    <!-- User card -->
-    <div class="user-card">
-      <div class="user-card-name" id="ucName">—</div>
-      <div class="user-card-addr" id="ucAddr">—</div>
-      <div class="user-card-balances">
-        <div class="uc-bal">
-          <span class="uc-bal-label">SOL</span>
-          <span class="uc-bal-val" id="ucSol">—</span>
-        </div>
-        <div class="uc-bal-divider"></div>
-        <div class="uc-bal">
-          <span class="uc-bal-label">USDC</span>
-          <span class="uc-bal-val" id="ucUsdc">—</span>
-        </div>
+    <!-- === LOADING SCREEN === -->
+    <div id="screenLoading" class="screen-cover">
+      <div class="screen-center">
+        <div class="loader"></div>
+        <p class="screen-body" style="margin-top: 16px">
+          Loading your dashboard&hellip;
+        </p>
       </div>
     </div>
 
-    <nav class="sidebar-nav">
-      <div class="nav-section-label">Dashboard</div>
-      <div class="nav-item active" data-page="overview">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
-        Overview
-      </div>
-      <div class="nav-item" data-page="transactions">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
-        Transactions
-      </div>
-      <div class="nav-item" data-page="copytrade">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-        Copy Trading
-      </div>
-      <div class="nav-item" data-page="agents">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-9 11H9V7h2v6zm4 0h-2V7h2v6z"/></svg>
-        AI Agents
-      </div>
-      <div class="nav-item" data-page="offramp">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
-        Off-ramp
-      </div>
-    </nav>
-
-    <div class="sidebar-footer">
-      <span class="status-dot"></span>Live data
-    </div>
-  </aside>
-
-  <!-- Main wrap -->
-  <div class="main-wrap">
-
-    <!-- Header -->
-    <header class="top-header">
-      <span class="page-title" id="headerTitle">Overview</span>
-      <div class="header-right">
-        <span class="header-network-badge" id="networkBadge">devnet</span>
-        <button class="btn-refresh" id="btnRefresh">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-          Refresh
-        </button>
-      </div>
-    </header>
-
-    <!-- -- PAGE: Overview -- -->
-    <div class="content page active" id="page-overview">
-
-      <div class="stat-grid" style="margin-bottom:24px">
-        <div class="stat-card">
-          <div class="stat-label">Total Transactions</div>
-          <div class="stat-value" id="st-total">—</div>
-          <div class="stat-sub" id="st-success-sub">— successful</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Swaps</div>
-          <div class="stat-value" id="st-swaps">—</div>
-          <div class="stat-sub">token swaps executed</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Transfers</div>
-          <div class="stat-value" id="st-transfers">—</div>
-          <div class="stat-sub">SOL / USDC sent</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Copy Trades</div>
-          <div class="stat-value" id="st-copies">—</div>
-          <div class="stat-sub" id="st-active-copies">— active</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">AI Agents</div>
-          <div class="stat-value" id="st-agents">—</div>
-          <div class="stat-sub" id="st-running-agents">— running</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Off-ramps</div>
-          <div class="stat-value" id="st-offramps">—</div>
-          <div class="stat-sub">cash-out orders</div>
-        </div>
-      </div>
-
-      <div class="two-col">
-        <div class="chart-wrap">
-          <div class="chart-header">
-            <span class="chart-title">Transaction Activity</span>
-            <span class="chart-period">Last 7 days</span>
+    <!-- === MAIN APP === -->
+    <div id="app" style="display: none">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-brand">
+          <div class="brand-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"
+              />
+            </svg>
           </div>
-          <div class="bar-chart" id="activityChart"></div>
-        </div>
-
-        <div class="table-wrapper">
-          <div class="table-toolbar">
-            <span class="tb-label">Recent Transactions</span>
-          </div>
-          <table>
-            <thead>
-              <tr><th>Type</th><th>Amount</th><th>Tokens</th><th>Status</th><th>Date</th></tr>
-            </thead>
-            <tbody id="recentTxBody">
-              <tr class="loading-row"><td colspan="5">Loading...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Volume summary row -->
-      <div class="stat-grid">
-        <div class="stat-card">
-          <div class="stat-label">Swap Volume</div>
-          <div class="stat-value" id="vol-swap">—</div>
-          <div class="stat-sub">SOL equivalent</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Transfer Volume</div>
-          <div class="stat-value" id="vol-transfer">—</div>
-          <div class="stat-sub">SOL equivalent</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Off-ramp Volume</div>
-          <div class="stat-value" id="vol-offramp">—</div>
-          <div class="stat-sub">SOL equivalent</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- -- PAGE: Transactions -- -->
-    <div class="content page" id="page-transactions">
-      <div class="table-wrapper">
-        <div class="table-toolbar">
-          <div class="table-toolbar-left">
-            <span class="tb-label">My Transactions</span>
-            <span class="tb-count" id="txnCount">—</span>
-          </div>
-          <div class="table-toolbar-right">
-            <select class="tb-select" id="txnTypeFilter">
-              <option value="">All Types</option>
-              <option value="swap">Swap</option>
-              <option value="transfer">Transfer</option>
-              <option value="copy_trade">Copy Trade</option>
-              <option value="offramp">Off-ramp</option>
-            </select>
-            <select class="tb-select" id="txnStatusFilter">
-              <option value="">All Statuses</option>
-              <option value="success">Success</option>
-              <option value="failed">Failed</option>
-              <option value="pending">Pending</option>
-            </select>
+          <div class="brand-text-wrap">
+            <div class="brand-name">Agent-47</div>
+            <div class="brand-net" id="sidebarNet">devnet</div>
           </div>
         </div>
-        <table>
-          <thead>
-            <tr><th>#</th><th>Type</th><th>Amount</th><th>In</th><th>Out</th><th>Signature</th><th>Status</th><th>Date</th></tr>
-          </thead>
-          <tbody id="txnBody">
-            <tr class="loading-row"><td colspan="8">Loading...</td></tr>
-          </tbody>
-        </table>
-        <div class="pagination">
-          <span class="pag-info" id="txnPagInfo">—</span>
-          <div class="pag-btns">
-            <button class="pag-btn" id="txnPrev" disabled>Prev</button>
-            <button class="pag-btn" id="txnNext" disabled>Next</button>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- -- PAGE: Copy Trading -- -->
-    <div class="content page" id="page-copytrade">
-      <div class="stat-grid" style="margin-bottom:20px">
-        <div class="stat-card">
-          <div class="stat-label">Active Subscriptions</div>
-          <div class="stat-value" id="ct-active">—</div>
-          <div class="stat-sub">live wallet monitors</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Total Configured</div>
-          <div class="stat-value" id="ct-total">—</div>
-          <div class="stat-sub">all time</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Mirrored Trades</div>
-          <div class="stat-value" id="ct-txns">—</div>
-          <div class="stat-sub">copy trade executions</div>
-        </div>
-      </div>
-      <div class="table-wrapper">
-        <div class="table-toolbar">
-          <div class="table-toolbar-left">
-            <span class="tb-label">Copy Trade Configurations</span>
-            <span class="tb-count" id="ctCount">—</span>
-          </div>
-          <div class="table-toolbar-right">
-            <select class="tb-select" id="ctStatusFilter">
-              <option value="">All</option>
-              <option value="1">Active</option>
-              <option value="0">Stopped</option>
-            </select>
-          </div>
-        </div>
-        <table>
-          <thead>
-            <tr><th>#</th><th>Target Wallet</th><th>Max SOL / Trade</th><th>Status</th><th>Since</th></tr>
-          </thead>
-          <tbody id="ctBody">
-            <tr class="loading-row"><td colspan="5">Loading...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- -- PAGE: AI Agents -- -->
-    <div class="content page" id="page-agents">
-      <div class="stat-grid" style="margin-bottom:20px">
-        <div class="stat-card">
-          <div class="stat-label">Running Now</div>
-          <div class="stat-value" id="ag-running">—</div>
-          <div class="stat-sub">active cron jobs</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Trader Bots</div>
-          <div class="stat-value" id="ag-trader">—</div>
-          <div class="stat-sub">DCA automation</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Analyst Bots</div>
-          <div class="stat-value" id="ag-analyst">—</div>
-          <div class="stat-sub">price monitoring</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Sniper Bots</div>
-          <div class="stat-value" id="ag-sniper">—</div>
-          <div class="stat-sub">launch sniping</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Liquidity Bots</div>
-          <div class="stat-value" id="ag-liquidity">—</div>
-          <div class="stat-sub">balance monitors</div>
-        </div>
-      </div>
-      <div class="table-wrapper">
-        <div class="table-toolbar">
-          <div class="table-toolbar-left">
-            <span class="tb-label">My AI Agents</span>
-            <span class="tb-count" id="agCount">—</span>
-          </div>
-          <div class="table-toolbar-right">
-            <select class="tb-select" id="agTypeFilter">
-              <option value="">All Types</option>
-              <option value="trader">Trader</option>
-              <option value="analyst">Analyst</option>
-              <option value="sniper">Sniper</option>
-              <option value="liquidity">Liquidity</option>
-            </select>
-            <select class="tb-select" id="agStatusFilter">
-              <option value="">All</option>
-              <option value="1">Running</option>
-              <option value="0">Stopped</option>
-            </select>
-          </div>
-        </div>
-        <table>
-          <thead>
-            <tr><th>#</th><th>Name</th><th>Type</th><th>Configuration</th><th>Status</th><th>Created</th></tr>
-          </thead>
-          <tbody id="agBody">
-            <tr class="loading-row"><td colspan="6">Loading...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- -- PAGE: Off-ramp -- -->
-    <div class="content page" id="page-offramp">
-
-      <!-- Bank account card -->
-      <div class="bank-card" id="bankCard">
-        <div class="bank-card-inner">
-          <div class="bank-card-label">Registered Bank Account</div>
-          <div class="bank-card-empty" id="bankEmpty">
-            No bank account linked.<br>
-            Use <code>/setbank</code> in the Telegram bot to add one.
-          </div>
-          <div id="bankDetails" style="display:none">
-            <div class="bank-detail-row">
-              <span class="bank-detail-key">Bank</span>
-              <span class="bank-detail-val" id="bankName">—</span>
+        <!-- User card -->
+        <div class="user-card">
+          <div class="user-card-name" id="ucName">ï¿½</div>
+          <div class="user-card-addr" id="ucAddr">ï¿½</div>
+          <div class="user-card-balances">
+            <div class="uc-bal">
+              <span class="uc-bal-label">SOL</span>
+              <span class="uc-bal-val" id="ucSol">ï¿½</span>
             </div>
-            <div class="bank-detail-row">
-              <span class="bank-detail-key">Account Number</span>
-              <span class="bank-detail-val mono" id="bankAcct">—</span>
-            </div>
-            <div class="bank-detail-row">
-              <span class="bank-detail-key">Account Name</span>
-              <span class="bank-detail-val" id="bankAcctName">—</span>
+            <div class="uc-bal-divider"></div>
+            <div class="uc-bal">
+              <span class="uc-bal-label">USDC</span>
+              <span class="uc-bal-val" id="ucUsdc">ï¿½</span>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Off-ramp transactions -->
-      <div class="table-wrapper">
-        <div class="table-toolbar">
-          <span class="tb-label">Off-ramp History</span>
-          <span class="tb-count" id="orCount">—</span>
+        <nav class="sidebar-nav">
+          <div class="nav-section-label">Dashboard</div>
+          <div class="nav-item active" data-page="overview">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"
+              />
+            </svg>
+            Overview
+          </div>
+          <div class="nav-item" data-page="transactions">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"
+              />
+            </svg>
+            Transactions
+          </div>
+          <div class="nav-item" data-page="copytrade">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"
+              />
+            </svg>
+            Copy Trading
+          </div>
+          <div class="nav-item" data-page="agents">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-9 11H9V7h2v6zm4 0h-2V7h2v6z"
+              />
+            </svg>
+            AI Agents
+          </div>
+          <div class="nav-item" data-page="offramp">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"
+              />
+            </svg>
+            Off-ramp
+          </div>
+        </nav>
+
+        <div class="sidebar-footer">
+          <span class="status-dot"></span>Live data
         </div>
-        <table>
-          <thead>
-            <tr><th>#</th><th>Amount</th><th>Token</th><th>Signature</th><th>Status</th><th>Date</th></tr>
-          </thead>
-          <tbody id="orBody">
-            <tr class="loading-row"><td colspan="6">Loading...</td></tr>
-          </tbody>
-        </table>
+      </aside>
+
+      <!-- Main wrap -->
+      <div class="main-wrap">
+        <!-- Header -->
+        <header class="top-header">
+          <span class="page-title" id="headerTitle">Overview</span>
+          <div class="header-right">
+            <span class="header-network-badge" id="networkBadge">devnet</span>
+            <button class="btn-refresh" id="btnRefresh">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+                />
+              </svg>
+              Refresh
+            </button>
+          </div>
+        </header>
+
+        <!-- -- PAGE: Overview -- -->
+        <div class="content page active" id="page-overview">
+          <div class="stat-grid" style="margin-bottom: 24px">
+            <div class="stat-card">
+              <div class="stat-label">Total Transactions</div>
+              <div class="stat-value" id="st-total">ï¿½</div>
+              <div class="stat-sub" id="st-success-sub">ï¿½ successful</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Swaps</div>
+              <div class="stat-value" id="st-swaps">ï¿½</div>
+              <div class="stat-sub">token swaps executed</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Transfers</div>
+              <div class="stat-value" id="st-transfers">ï¿½</div>
+              <div class="stat-sub">SOL / USDC sent</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Copy Trades</div>
+              <div class="stat-value" id="st-copies">ï¿½</div>
+              <div class="stat-sub" id="st-active-copies">ï¿½ active</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">AI Agents</div>
+              <div class="stat-value" id="st-agents">ï¿½</div>
+              <div class="stat-sub" id="st-running-agents">ï¿½ running</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Off-ramps</div>
+              <div class="stat-value" id="st-offramps">ï¿½</div>
+              <div class="stat-sub">cash-out orders</div>
+            </div>
+          </div>
+
+          <div class="two-col">
+            <div class="chart-wrap">
+              <div class="chart-header">
+                <span class="chart-title">Transaction Activity</span>
+                <span class="chart-period">Last 7 days</span>
+              </div>
+              <div class="bar-chart" id="activityChart"></div>
+            </div>
+
+            <div class="table-wrapper">
+              <div class="table-toolbar">
+                <span class="tb-label">Recent Transactions</span>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Tokens</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody id="recentTxBody">
+                  <tr class="loading-row">
+                    <td colspan="5">Loading...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Volume summary row -->
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-label">Swap Volume</div>
+              <div class="stat-value" id="vol-swap">ï¿½</div>
+              <div class="stat-sub">SOL equivalent</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Transfer Volume</div>
+              <div class="stat-value" id="vol-transfer">ï¿½</div>
+              <div class="stat-sub">SOL equivalent</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Off-ramp Volume</div>
+              <div class="stat-value" id="vol-offramp">ï¿½</div>
+              <div class="stat-sub">SOL equivalent</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- -- PAGE: Transactions -- -->
+        <div class="content page" id="page-transactions">
+          <div class="table-wrapper">
+            <div class="table-toolbar">
+              <div class="table-toolbar-left">
+                <span class="tb-label">My Transactions</span>
+                <span class="tb-count" id="txnCount">ï¿½</span>
+              </div>
+              <div class="table-toolbar-right">
+                <select class="tb-select" id="txnTypeFilter">
+                  <option value="">All Types</option>
+                  <option value="swap">Swap</option>
+                  <option value="transfer">Transfer</option>
+                  <option value="copy_trade">Copy Trade</option>
+                  <option value="offramp">Off-ramp</option>
+                </select>
+                <select class="tb-select" id="txnStatusFilter">
+                  <option value="">All Statuses</option>
+                  <option value="success">Success</option>
+                  <option value="failed">Failed</option>
+                  <option value="pending">Pending</option>
+                </select>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Type</th>
+                  <th>Amount</th>
+                  <th>In</th>
+                  <th>Out</th>
+                  <th>Signature</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="txnBody">
+                <tr class="loading-row">
+                  <td colspan="8">Loading...</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="pagination">
+              <span class="pag-info" id="txnPagInfo">ï¿½</span>
+              <div class="pag-btns">
+                <button class="pag-btn" id="txnPrev" disabled>Prev</button>
+                <button class="pag-btn" id="txnNext" disabled>Next</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- -- PAGE: Copy Trading -- -->
+        <div class="content page" id="page-copytrade">
+          <div class="stat-grid" style="margin-bottom: 20px">
+            <div class="stat-card">
+              <div class="stat-label">Active Subscriptions</div>
+              <div class="stat-value" id="ct-active">ï¿½</div>
+              <div class="stat-sub">live wallet monitors</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Total Configured</div>
+              <div class="stat-value" id="ct-total">ï¿½</div>
+              <div class="stat-sub">all time</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Mirrored Trades</div>
+              <div class="stat-value" id="ct-txns">ï¿½</div>
+              <div class="stat-sub">copy trade executions</div>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <div class="table-toolbar">
+              <div class="table-toolbar-left">
+                <span class="tb-label">Copy Trade Configurations</span>
+                <span class="tb-count" id="ctCount">ï¿½</span>
+              </div>
+              <div class="table-toolbar-right">
+                <select class="tb-select" id="ctStatusFilter">
+                  <option value="">All</option>
+                  <option value="1">Active</option>
+                  <option value="0">Stopped</option>
+                </select>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Target Wallet</th>
+                  <th>Max SOL / Trade</th>
+                  <th>Status</th>
+                  <th>Since</th>
+                </tr>
+              </thead>
+              <tbody id="ctBody">
+                <tr class="loading-row">
+                  <td colspan="5">Loading...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- -- PAGE: AI Agents -- -->
+        <div class="content page" id="page-agents">
+          <div class="stat-grid" style="margin-bottom: 20px">
+            <div class="stat-card">
+              <div class="stat-label">Running Now</div>
+              <div class="stat-value" id="ag-running">ï¿½</div>
+              <div class="stat-sub">active cron jobs</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Trader Bots</div>
+              <div class="stat-value" id="ag-trader">ï¿½</div>
+              <div class="stat-sub">DCA automation</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Analyst Bots</div>
+              <div class="stat-value" id="ag-analyst">ï¿½</div>
+              <div class="stat-sub">price monitoring</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Sniper Bots</div>
+              <div class="stat-value" id="ag-sniper">ï¿½</div>
+              <div class="stat-sub">launch sniping</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Liquidity Bots</div>
+              <div class="stat-value" id="ag-liquidity">ï¿½</div>
+              <div class="stat-sub">balance monitors</div>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <div class="table-toolbar">
+              <div class="table-toolbar-left">
+                <span class="tb-label">My AI Agents</span>
+                <span class="tb-count" id="agCount">ï¿½</span>
+              </div>
+              <div class="table-toolbar-right">
+                <select class="tb-select" id="agTypeFilter">
+                  <option value="">All Types</option>
+                  <option value="trader">Trader</option>
+                  <option value="analyst">Analyst</option>
+                  <option value="sniper">Sniper</option>
+                  <option value="liquidity">Liquidity</option>
+                </select>
+                <select class="tb-select" id="agStatusFilter">
+                  <option value="">All</option>
+                  <option value="1">Running</option>
+                  <option value="0">Stopped</option>
+                </select>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Configuration</th>
+                  <th>Status</th>
+                  <th>Created</th>
+                </tr>
+              </thead>
+              <tbody id="agBody">
+                <tr class="loading-row">
+                  <td colspan="6">Loading...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- -- PAGE: Off-ramp -- -->
+        <div class="content page" id="page-offramp">
+          <!-- Bank account card -->
+          <div class="bank-card" id="bankCard">
+            <div class="bank-card-inner">
+              <div class="bank-card-label">Registered Bank Account</div>
+              <div class="bank-card-empty" id="bankEmpty">
+                No bank account linked.<br />
+                Use <code>/setbank</code> in the Telegram bot to add one.
+              </div>
+              <div id="bankDetails" style="display: none">
+                <div class="bank-detail-row">
+                  <span class="bank-detail-key">Bank</span>
+                  <span class="bank-detail-val" id="bankName">ï¿½</span>
+                </div>
+                <div class="bank-detail-row">
+                  <span class="bank-detail-key">Account Number</span>
+                  <span class="bank-detail-val mono" id="bankAcct">ï¿½</span>
+                </div>
+                <div class="bank-detail-row">
+                  <span class="bank-detail-key">Account Name</span>
+                  <span class="bank-detail-val" id="bankAcctName">ï¿½</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Off-ramp transactions -->
+          <div class="table-wrapper">
+            <div class="table-toolbar">
+              <span class="tb-label">Off-ramp History</span>
+              <span class="tb-count" id="orCount">ï¿½</span>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Amount</th>
+                  <th>Token</th>
+                  <th>Signature</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="orBody">
+                <tr class="loading-row">
+                  <td colspan="6">Loading...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
+      <!-- .main-wrap -->
     </div>
+    <!-- #app -->
 
-  </div><!-- .main-wrap -->
-</div><!-- #app -->
-
-<div class="toast-area" id="toastArea"></div>
-<script src="app.js"></script>
-</body>
+    <div class="toast-area" id="toastArea"></div>
+    <script src="app.js"></script>
+  </body>
 </html>
