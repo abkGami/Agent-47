@@ -10,5 +10,5 @@
  *
  * After editing, redeploy to Vercel.
  */
-// window.API_BASE = "agent-47.railway.internal";
-window.API_BASE = "agent-47-production.up.railway.app";
+// window.API_BASE = 'http://agent-47.railway.internal:4747';
+window.API_BASE = 'https://agent-47-production.up.railway.app';

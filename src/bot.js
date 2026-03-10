@@ -37,7 +37,7 @@ const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const PRIVY_APP_ID = process.env.PRIVY_APP_ID;
 const PRIVY_APP_SECRET = process.env.PRIVY_APP_SECRET;
 const NETWORK = process.env.NETWORK || "devnet";
-const DASHBOARD_URL = process.env.DASHBOARD_URL || "http://localhost:4747";
+const DASHBOARD_URL = (process.env.DASHBOARD_URL || 'http://localhost:4747').replace(/\/$/, '');
 
 console.log("=== Initializing Telegram Bot ===");
 console.log(`Network: ${NETWORK}`);
