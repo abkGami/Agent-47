@@ -1,6 +1,7 @@
 const Database = require('better-sqlite3');
-const fs = require('fs');
-const path = require('path');
+const fs      = require('fs');
+const path    = require('path');
+const crypto  = require('crypto');
 
 // Create data directory if it doesn't exist
 const dataDir = path.join(__dirname, '..', 'data');
@@ -10,6 +11,9 @@ if (!fs.existsSync(dataDir)) {
 
 // Create database instance
 const db = new Database(path.join(dataDir, 'agent_wallet.db'));
+
+// Migrate: add dashboard_token column to existing databases
+try { db.exec('ALTER TABLE users ADD COLUMN dashboard_token TEXT'); } catch (_) { /* already exists */ }
 
 // Initialize database with all required tables
 function initDB() {
@@ -22,6 +26,7 @@ function initDB() {
       privy_user_id TEXT,
       wallet_address TEXT,
       wallet_id TEXT,
+      dashboard_token TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
@@ -258,6 +263,32 @@ function getBankAccount(telegramId) {
 }
 
 
+// Dashboard Token Operations
+
+/**
+ * Get existing dashboard token or generate a new one for the user.
+ * @param {string} telegramId - Telegram user ID
+ * @returns {string|null} Secure hex token
+ */
+function getOrCreateDashboardToken(telegramId) {
+  const user = getUserByTelegramId(telegramId);
+  if (!user) return null;
+  if (user.dashboard_token) return user.dashboard_token;
+  const token = crypto.randomBytes(28).toString('hex');
+  db.prepare('UPDATE users SET dashboard_token = ? WHERE telegram_id = ?').run(token, telegramId);
+  return token;
+}
+
+/**
+ * Lookup a user by their dashboard token.
+ * @param {string} token - Dashboard token
+ * @returns {object|null} User row or null
+ */
+function getUserByDashboardToken(token) {
+  if (!token) return null;
+  return db.prepare('SELECT * FROM users WHERE dashboard_token = ?').get(token) || null;
+}
+
 // Export database instance and functions
 module.exports = db;
 module.exports.initDB = initDB;
@@ -273,3 +304,5 @@ module.exports.updateAgentStatus = updateAgentStatus;
 module.exports.logTransaction = logTransaction;
 module.exports.saveBankAccount = saveBankAccount;
 module.exports.getBankAccount = getBankAccount;
+module.exports.getOrCreateDashboardToken = getOrCreateDashboardToken;
+module.exports.getUserByDashboardToken = getUserByDashboardToken;

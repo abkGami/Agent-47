@@ -40,6 +40,7 @@ const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const PRIVY_APP_ID = process.env.PRIVY_APP_ID;
 const PRIVY_APP_SECRET = process.env.PRIVY_APP_SECRET;
 const NETWORK = process.env.NETWORK || 'devnet';
+const DASHBOARD_URL = process.env.DASHBOARD_URL || 'http://localhost:4747';
 
 console.log('=== Initializing Telegram Bot ===');
 console.log(`Network: ${NETWORK}`);
@@ -84,6 +85,7 @@ bot.command('start', async (ctx) => {
       `/spawnbot - Create an AI agent bot\n` +
       `/mybots - View your agent bots\n` +
       `/stopbot - Stop an agent bot\n` +
+      `/dashboard - Open your personal dashboard\n` +
       `/history - View transaction history\n` +
       `/help - Show this help message\n\n` +
       `Let's get started! Use /createwallet to begin.`;
@@ -117,6 +119,7 @@ bot.command('help', async (ctx) => {
       `/spawnbot - Create autonomous bot\n` +
       `/mybots - View your bots\n` +
       `/stopbot - Stop a bot\n\n` +
+      `/dashboard - Open your personal dashboard\n` +
       `/history - Transaction history`
     );
   } catch (error) {
@@ -584,6 +587,33 @@ bot.command('history', async (ctx) => {
     
   } catch (error) {
     console.error('Error in /history:', error);
+    await ctx.reply(`❌ An error occurred: ${error.message}`);
+  }
+});
+
+// /dashboard command
+bot.command('dashboard', async (ctx) => {
+  try {
+    const telegramId = ctx.from.id.toString();
+
+    console.log(`/dashboard command from ${telegramId}`);
+
+    const user = db.getUserByTelegramId(telegramId);
+    if (!user) {
+      await ctx.reply('❌ You do not have an account yet. Use /createwallet to get started.');
+      return;
+    }
+
+    const token = db.getOrCreateDashboardToken(telegramId);
+    const url   = `${DASHBOARD_URL}/?token=${token}`;
+
+    await ctx.reply(
+      `Your personal dashboard is ready.\n\n` +
+      `${url}\n\n` +
+      `Keep this link private — it gives full access to your activity.`
+    );
+  } catch (error) {
+    console.error('Error in /dashboard:', error);
     await ctx.reply(`❌ An error occurred: ${error.message}`);
   }
 });
